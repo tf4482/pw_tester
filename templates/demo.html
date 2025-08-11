@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block title %}🎯 Demo - PW Tester{% endblock %}
+
+{% block content %}
+<div class="px-4 sm:px-0">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">
+            🎯 Password Analysis Demo
+        </h1>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+            See how different types of passwords perform in our security analysis.
+            These examples demonstrate various password strengths and weaknesses.
+        </p>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loading" class="text-center py-12">
+        <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <p class="mt-4 text-gray-600">Loading demo examples...</p>
+    </div>
+
+    <!-- Demo Results -->
+    <div id="demo-results" class="hidden space-y-8">
+        <!-- Results will be populated by JavaScript -->
+    </div>
+
+    <!-- Error Message -->
+    <div id="error" class="hidden bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+        <div class="flex">
+            <i class="fas fa-exclamation-triangle text-red-400 mr-3 mt-1"></i>
+            <div>
+                <h3 class="text-sm font-medium text-red-800">Error</h3>
+                <p class="text-sm text-red-700 mt-1" id="error-message"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Analyzer -->
+    <div class="text-center mt-12">
+        <a href="{{ url_for('index') }}" 
+           class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+            <i class="fas fa-arrow-left mr-2"></i>
+            Analyze Your Own Password
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', async function() {
+    const loading = document.getElementById('loading');
+    const results = document.getElementById('demo-results');
+    const error = document.getElementById('error');
+
+    try {
+        const response = await fetch('/api/demo');
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Failed to load demo');
+        }
+
+        displayDemoResults(data);
+    } catch (err) {
+        showError(err.message);
+    } finally {
+        loading.classList.add('hidden');
+    }
+
+    function displayDemoResults(demoData) {
+        results.innerHTML = '';
+
+        demoData.forEach((item, index) => {
+            const resultDiv = document.createElement('div');
+            resultDiv.className = 'bg-white rounded-lg shadow-lg overflow-hidden';
+            
+            resultDiv.innerHTML = `
+                <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6">
+                    <h2 class="text-2xl font-bold mb-2">
+                        📝 ${item.description}
+                    </h2>
+                    <div class="bg-black bg-opacity-20 rounded-lg p-3 font-mono text-lg">
+                        Password: "${item.password}"
+                    </div>
+                </div>
+                
+                <div class="p-6">
+                    <!-- Password Properties -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-chart-bar text-blue-600 mr-2"></i>
+                            Password Properties
+                        </h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="bg-gray-50 p-3 rounded-lg text-center">
+                                <div class="text-sm text-gray-600">Length</div>
+                                <div class="text-lg font-semibold">${item.password_length}</div>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded-lg text-center">
+                                <div class="text-sm text-gray-600">Character Space</div>
+                                <div class="text-lg font-semibold">${item.character_space}</div>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded-lg text-center">
+                                <div class="text-sm text-gray-600">Entropy</div>
+                                <div class="text-lg font-semibold">${item.entropy_bits} bits</div>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded-lg text-center">
+                                <div class="text-sm text-gray-600">Complexity</div>
+                                <div class="text-lg font-semibold ${getComplexityColor(item.complexity_score)}">${item.complexity_score}</div>
+                            </div>
+                        </div>
+                        <div class="mt-4 bg-gray-50 p-3 rounded-lg">
+                            <div class="text-sm text-gray-600 text-center">Total Combinations</div>
+                            <div class="text-lg font-semibold text-center">${item.total_combinations.toLocaleString()}</div>
+                        </div>
+                    </div>
+
+                    <!-- Brute Force Times -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-bolt text-yellow-600 mr-2"></i>
+                            Brute Force Time Estimates
+                        </h3>
+                        <div class="space-y-2">
+                            ${generateTimeEstimates(item.brute_force_times)}
+                        </div>
+                    </div>
+
+                    <!-- Recommendations -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+                            Recommendations
+                        </h3>
+                        <ul class="space-y-2">
+                            ${generateRecommendations(item.recommendations)}
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            results.appendChild(resultDiv);
+        });
+
+        results.classList.remove('hidden');
+    }
+
+    function generateTimeEstimates(times) {
+        const scenarios = {
+            'basic_cpu': '💻 Basic CPU (1M/s)',
+            'modern_cpu': '🖥️ Modern CPU (100M/s)',
+            'gpu_single': '🎮 Single GPU (10B/s)',
+            'gpu_cluster': '🔥 GPU Cluster (1T/s)',
+            'quantum_future': '🚀 Quantum Computer (1P/s)'
+        };
+
+        return Object.entries(times)
+            .filter(([key]) => scenarios[key])
+            .map(([key, time]) => `
+                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <span class="font-medium">${scenarios[key]}</span>
+                    <span class="font-semibold ${getTimeColor(time)}">${time}</span>
+                </div>
+            `).join('');
+    }
+
+    function generateRecommendations(recommendations) {
+        return recommendations.map(rec => {
+            const isGood = rec.toLowerCase().includes('good complexity');
+            const icon = isGood ? 'fas fa-check-circle text-green-500' : 'fas fa-exclamation-triangle text-yellow-500';
+            return `
+                <li class="flex items-start">
+                    <i class="${icon} mr-2 mt-1"></i>
+                    <span>${rec}</span>
+                </li>
+            `;
+        }).join('');
+    }
+
+    function getComplexityColor(complexity) {
+        const colors = {
+            'Very Weak': 'text-red-600',
+            'Weak': 'text-red-500',
+            'Medium': 'text-yellow-600',
+            'Strong': 'text-green-600',
+            'Very Strong': 'text-green-700'
+        };
+        return colors[complexity] || 'text-gray-600';
+    }
+
+    function getTimeColor(time) {
+        if (time.toLowerCase().includes('uncrackable')) return 'text-green-600';
+        if (time.includes('years')) return 'text-green-500';
+        if (time.includes('days')) return 'text-yellow-600';
+        if (time.includes('hours')) return 'text-orange-500';
+        return 'text-red-600';
+    }
+
+    function showError(message) {
+        document.getElementById('error-message').textContent = message;
+        error.classList.remove('hidden');
+    }
+});
+</script>
+{% endblock %}
