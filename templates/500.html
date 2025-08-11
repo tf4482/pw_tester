@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}500 - Server Error - PW Tester{% endblock %}
+
+{% block content %}
+<div class="text-center py-16">
+    <div class="max-w-md mx-auto">
+        <div class="text-6xl mb-4">⚠️</div>
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">Server Error</h1>
+        <p class="text-xl text-gray-600 mb-8">
+            Something went wrong on our end. Please try again later.
+        </p>
+        <div class="space-y-4">
+            <a href="{{ url_for('index') }}" 
+               class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                <i class="fas fa-home mr-2"></i>
+                Go Home
+            </a>
+            <br>
+            <button onclick="window.location.reload()" 
+                    class="inline-flex items-center px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium">
+                <i class="fas fa-redo mr-2"></i>
+                Try Again
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
