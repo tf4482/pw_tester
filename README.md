@@ -15,6 +15,7 @@ A comprehensive password security analysis tool with both command-line and web i
 
 ### 🌐 Web Interface
 - **🎨 Modern UI**: Beautiful Tailwind CSS interface with responsive design
+- **🌙 Dark Mode**: Toggle between light and dark themes with persistent preference
 - **🔒 Secure Analysis**: Real-time password analysis without storage
 - **📱 Mobile Friendly**: Works perfectly on all devices
 - **⚡ Fast API**: RESTful API for password analysis
