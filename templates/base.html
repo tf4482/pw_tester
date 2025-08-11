@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}🔐 PW Tester{% endblock %}</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#64748b',
+                        success: '#10b981',
+                        warning: '#f59e0b',
+                        danger: '#ef4444',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+    <!-- Navigation -->
+    <nav class="bg-blue-600 text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="{{ url_for('index') }}" class="flex items-center space-x-2 text-xl font-bold">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>PW Tester</span>
+                    </a>
+                </div>
+                
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="{{ url_for('index') }}" 
+                           class="hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                            <i class="fas fa-home mr-1"></i> Home
+                        </a>
+                        <a href="{{ url_for('demo_page') }}" 
+                           class="hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                            <i class="fas fa-eye mr-1"></i> Demo
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button type="button" id="mobile-menu-button" 
+                            class="bg-blue-600 inline-flex items-center justify-center p-2 rounded-md text-blue-200 hover:text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile menu -->
+        <div class="md:hidden hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="{{ url_for('index') }}" 
+                   class="hover:bg-blue-700 block px-3 py-2 rounded-md text-base font-medium">
+                    <i class="fas fa-home mr-1"></i> Home
+                </a>
+                <a href="{{ url_for('demo_page') }}" 
+                   class="hover:bg-blue-700 block px-3 py-2 rounded-md text-base font-medium">
+                    <i class="fas fa-eye mr-1"></i> Demo
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <h3 class="text-lg font-semibold flex items-center">
+                        <i class="fas fa-shield-alt mr-2"></i>
+                        PW Tester
+                    </h3>
+                    <p class="text-gray-300">Professional password security analysis tool</p>
+                </div>
+                <div class="text-center md:text-right">
+                    <p class="flex items-center justify-center md:justify-end mb-1">
+                        <i class="fas fa-lock mr-2"></i>
+                        Your passwords are never stored or logged
+                    </p>
+                    <p class="text-sm text-gray-400">Built with Flask & Tailwind CSS</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom JavaScript -->
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+    
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
