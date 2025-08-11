@@ -6,10 +6,10 @@
 <div class="px-4 sm:px-0">
     <!-- Header -->
     <div class="text-center mb-8">
-        <h1 class="text-4xl font-bold text-gray-900 mb-4">
+        <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
             🎯 Password Analysis Demo
         </h1>
-        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+        <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
             See how different types of passwords perform in our security analysis.
             These examples demonstrate various password strengths and weaknesses.
         </p>
@@ -17,8 +17,8 @@
 
     <!-- Loading Spinner -->
     <div id="loading" class="text-center py-12">
-        <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-        <p class="mt-4 text-gray-600">Loading demo examples...</p>
+        <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 dark:border-blue-400"></div>
+        <p class="mt-4 text-gray-600 dark:text-gray-300">Loading demo examples...</p>
     </div>
 
     <!-- Demo Results -->
@@ -27,20 +27,20 @@
     </div>
 
     <!-- Error Message -->
-    <div id="error" class="hidden bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+    <div id="error" class="hidden bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6">
         <div class="flex">
-            <i class="fas fa-exclamation-triangle text-red-400 mr-3 mt-1"></i>
+            <i class="fas fa-exclamation-triangle text-red-400 dark:text-red-300 mr-3 mt-1"></i>
             <div>
-                <h3 class="text-sm font-medium text-red-800">Error</h3>
-                <p class="text-sm text-red-700 mt-1" id="error-message"></p>
+                <h3 class="text-sm font-medium text-red-800 dark:text-red-200">Error</h3>
+                <p class="text-sm text-red-700 dark:text-red-300 mt-1" id="error-message"></p>
             </div>
         </div>
     </div>
 
     <!-- Back to Analyzer -->
     <div class="text-center mt-12">
-        <a href="{{ url_for('index') }}" 
-           class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+        <a href="{{ url_for('index') }}"
+           class="inline-flex items-center px-6 py-3 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors font-medium">
             <i class="fas fa-arrow-left mr-2"></i>
             Analyze Your Own Password
         </a>
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         demoData.forEach((item, index) => {
             const resultDiv = document.createElement('div');
-            resultDiv.className = 'bg-white rounded-lg shadow-lg overflow-hidden';
+            resultDiv.className = 'bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-colors duration-300';
             
             resultDiv.innerHTML = `
                 <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6">
@@ -90,38 +90,38 @@ document.addEventListener('DOMContentLoaded', async function() {
                 <div class="p-6">
                     <!-- Password Properties -->
                     <div class="mb-6">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                            <i class="fas fa-chart-bar text-blue-600 mr-2"></i>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                            <i class="fas fa-chart-bar text-blue-600 dark:text-blue-400 mr-2"></i>
                             Password Properties
                         </h3>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <div class="bg-gray-50 p-3 rounded-lg text-center">
-                                <div class="text-sm text-gray-600">Length</div>
-                                <div class="text-lg font-semibold">${item.password_length}</div>
+                            <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-center">
+                                <div class="text-sm text-gray-600 dark:text-gray-400">Length</div>
+                                <div class="text-lg font-semibold dark:text-white">${item.password_length}</div>
                             </div>
-                            <div class="bg-gray-50 p-3 rounded-lg text-center">
-                                <div class="text-sm text-gray-600">Character Space</div>
-                                <div class="text-lg font-semibold">${item.character_space}</div>
+                            <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-center">
+                                <div class="text-sm text-gray-600 dark:text-gray-400">Character Space</div>
+                                <div class="text-lg font-semibold dark:text-white">${item.character_space}</div>
                             </div>
-                            <div class="bg-gray-50 p-3 rounded-lg text-center">
-                                <div class="text-sm text-gray-600">Entropy</div>
-                                <div class="text-lg font-semibold">${item.entropy_bits} bits</div>
+                            <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-center">
+                                <div class="text-sm text-gray-600 dark:text-gray-400">Entropy</div>
+                                <div class="text-lg font-semibold dark:text-white">${item.entropy_bits} bits</div>
                             </div>
-                            <div class="bg-gray-50 p-3 rounded-lg text-center">
-                                <div class="text-sm text-gray-600">Complexity</div>
+                            <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-center">
+                                <div class="text-sm text-gray-600 dark:text-gray-400">Complexity</div>
                                 <div class="text-lg font-semibold ${getComplexityColor(item.complexity_score)}">${item.complexity_score}</div>
                             </div>
                         </div>
-                        <div class="mt-4 bg-gray-50 p-3 rounded-lg">
-                            <div class="text-sm text-gray-600 text-center">Total Combinations</div>
-                            <div class="text-lg font-semibold text-center">${item.total_combinations.toLocaleString()}</div>
+                        <div class="mt-4 bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                            <div class="text-sm text-gray-600 dark:text-gray-400 text-center">Total Combinations</div>
+                            <div class="text-lg font-semibold dark:text-white text-center">${item.total_combinations.toLocaleString()}</div>
                         </div>
                     </div>
 
                     <!-- Brute Force Times -->
                     <div class="mb-6">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                            <i class="fas fa-bolt text-yellow-600 mr-2"></i>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                            <i class="fas fa-bolt text-yellow-600 dark:text-yellow-400 mr-2"></i>
                             Brute Force Time Estimates
                         </h3>
                         <div class="space-y-2">
@@ -131,8 +131,8 @@ document.addEventListener('DOMContentLoaded', async function() {
 
                     <!-- Recommendations -->
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                            <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                            <i class="fas fa-lightbulb text-yellow-500 dark:text-yellow-400 mr-2"></i>
                             Recommendations
                         </h3>
                         <ul class="space-y-2">
@@ -160,8 +160,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         return Object.entries(times)
             .filter(([key]) => scenarios[key])
             .map(([key, time]) => `
-                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                    <span class="font-medium">${scenarios[key]}</span>
+                <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <span class="font-medium dark:text-white">${scenarios[key]}</span>
                     <span class="font-semibold ${getTimeColor(time)}">${time}</span>
                 </div>
             `).join('');
@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             return `
                 <li class="flex items-start">
                     <i class="${icon} mr-2 mt-1"></i>
-                    <span>${rec}</span>
+                    <span class="text-gray-900 dark:text-white">${rec}</span>
                 </li>
             `;
         }).join('');

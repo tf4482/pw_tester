@@ -12,6 +12,7 @@
     
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
@@ -28,9 +29,9 @@
     
     {% block extra_head %}{% endblock %}
 </head>
-<body class="bg-gray-50 min-h-screen flex flex-col">
+<body class="bg-gray-50 dark:bg-gray-900 min-h-screen flex flex-col transition-colors duration-300">
     <!-- Navigation -->
-    <nav class="bg-blue-600 text-white shadow-lg">
+    <nav class="bg-blue-600 dark:bg-gray-800 text-white shadow-lg transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
@@ -40,23 +41,35 @@
                     </a>
                 </div>
                 
-                <div class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-4">
-                        <a href="{{ url_for('index') }}" 
-                           class="hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium transition-colors">
-                            <i class="fas fa-home mr-1"></i> Home
-                        </a>
-                        <a href="{{ url_for('demo_page') }}" 
-                           class="hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium transition-colors">
-                            <i class="fas fa-eye mr-1"></i> Demo
-                        </a>
-                    </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="{{ url_for('index') }}"
+                       class="hover:bg-blue-700 dark:hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                        <i class="fas fa-home mr-1"></i> Home
+                    </a>
+                    <a href="{{ url_for('demo_page') }}"
+                       class="hover:bg-blue-700 dark:hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                        <i class="fas fa-eye mr-1"></i> Demo
+                    </a>
+                    
+                    <!-- Dark Mode Toggle -->
+                    <button id="theme-toggle"
+                            class="p-2 rounded-md hover:bg-blue-700 dark:hover:bg-gray-700 transition-colors"
+                            title="Toggle dark mode">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:inline"></i>
+                    </button>
                 </div>
                 
-                <!-- Mobile menu button -->
-                <div class="md:hidden">
-                    <button type="button" id="mobile-menu-button" 
-                            class="bg-blue-600 inline-flex items-center justify-center p-2 rounded-md text-blue-200 hover:text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                <!-- Mobile menu button and theme toggle -->
+                <div class="md:hidden flex items-center space-x-2">
+                    <button id="mobile-theme-toggle"
+                            class="p-2 rounded-md hover:bg-blue-700 dark:hover:bg-gray-700 transition-colors"
+                            title="Toggle dark mode">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:inline"></i>
+                    </button>
+                    <button type="button" id="mobile-menu-button"
+                            class="bg-blue-600 dark:bg-gray-800 inline-flex items-center justify-center p-2 rounded-md text-blue-200 hover:text-white hover:bg-blue-700 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white transition-colors">
                         <i class="fas fa-bars"></i>
                     </button>
                 </div>
@@ -66,12 +79,12 @@
         <!-- Mobile menu -->
         <div class="md:hidden hidden" id="mobile-menu">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a href="{{ url_for('index') }}" 
-                   class="hover:bg-blue-700 block px-3 py-2 rounded-md text-base font-medium">
+                <a href="{{ url_for('index') }}"
+                   class="hover:bg-blue-700 dark:hover:bg-gray-700 block px-3 py-2 rounded-md text-base font-medium transition-colors">
                     <i class="fas fa-home mr-1"></i> Home
                 </a>
-                <a href="{{ url_for('demo_page') }}" 
-                   class="hover:bg-blue-700 block px-3 py-2 rounded-md text-base font-medium">
+                <a href="{{ url_for('demo_page') }}"
+                   class="hover:bg-blue-700 dark:hover:bg-gray-700 block px-3 py-2 rounded-md text-base font-medium transition-colors">
                     <i class="fas fa-eye mr-1"></i> Demo
                 </a>
             </div>
@@ -86,7 +99,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-white">
+    <footer class="bg-gray-800 dark:bg-gray-900 text-white transition-colors duration-300">
         <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="mb-4 md:mb-0">
@@ -94,14 +107,14 @@
                         <i class="fas fa-shield-alt mr-2"></i>
                         PW Tester
                     </h3>
-                    <p class="text-gray-300">Professional password security analysis tool</p>
+                    <p class="text-gray-300 dark:text-gray-400">Professional password security analysis tool</p>
                 </div>
                 <div class="text-center md:text-right">
                     <p class="flex items-center justify-center md:justify-end mb-1">
                         <i class="fas fa-lock mr-2"></i>
                         Your passwords are never stored or logged
                     </p>
-                    <p class="text-sm text-gray-400">Built with Flask & Tailwind CSS</p>
+                    <p class="text-sm text-gray-400 dark:text-gray-500">Built with Flask & Tailwind CSS</p>
                 </div>
             </div>
         </div>
@@ -109,6 +122,37 @@
 
     <!-- Custom JavaScript -->
     <script>
+        // Dark mode functionality
+        function initTheme() {
+            const theme = localStorage.getItem('theme') ||
+                         (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.contains('dark');
+            
+            if (isDark) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Initialize theme on page load
+        initTheme();
+
+        // Theme toggle event listeners
+        document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+        document.getElementById('mobile-theme-toggle').addEventListener('click', toggleTheme);
+
         // Mobile menu toggle
         document.getElementById('mobile-menu-button').addEventListener('click', function() {
             const mobileMenu = document.getElementById('mobile-menu');
