@@ -1,5 +1,5 @@
-# Use Python 3.11 Alpine image for smaller size
-FROM python:3.11-alpine
+# Use latest Alpine Linux image
+FROM alpine:latest
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -9,16 +9,21 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     POETRY_CACHE_DIR=/tmp/poetry_cache \
     PORT=5000
 
-# Install system dependencies
+# Install system dependencies including Python 3.11
 RUN apk add --no-cache \
+    python3 \
+    py3-pip \
     curl \
     gcc \
     musl-dev \
     linux-headers \
+    python3-dev \
+    && ln -sf python3 /usr/bin/python \
+    && ln -sf pip3 /usr/bin/pip \
     && rm -rf /var/cache/apk/*
 
 # Install Poetry
-RUN pip install --no-cache-dir poetry
+RUN pip install --no-cache-dir --break-system-packages poetry
 
 # Set work directory
 WORKDIR /app
