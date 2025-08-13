@@ -23,8 +23,21 @@ A comprehensive password security analysis tool with both command-line and web i
 - **🏭 Production Ready**: Gunicorn WSGI server configuration
 
 ## � Installation
+### 🐳 Docker (Recommended for Production)
 
-### 🚀 Using Poetry (Recommended)
+```bash
+# Clone the repository
+git clone <repository-url>
+cd pw_tester
+
+# Quick start with Docker Compose
+docker-compose up -d
+
+# Access the application
+open http://localhost:5000
+```
+
+### 🚀 Using Poetry (Development)
 
 ```bash
 # Clone the repository
@@ -211,7 +224,24 @@ This project is open source.
 
 ## 🚀 Production Deployment
 
-### 🏭 Using Gunicorn
+### 🐳 Docker Deployment (Recommended)
+
+```bash
+# Build and run with Docker Compose
+docker-compose up -d
+
+# Or build manually
+docker build -t pw-tester .
+docker run -d -p 5000:5000 --name pw-tester-app pw-tester
+
+# View logs
+docker-compose logs -f pw-tester
+
+# Stop the application
+docker-compose down
+```
+
+### 🏭 Using Gunicorn (Direct)
 
 ```bash
 # Install dependencies
@@ -227,6 +257,10 @@ poetry run gunicorn -w 4 -b 0.0.0.0:5000 web_app:app
 ### 🌍 Environment Variables
 
 ```bash
+# Copy environment template
+cp .env.example .env
+
+# Edit environment variables
 # Production settings
 export FLASK_ENV=production
 export SECRET_KEY=your-secret-key-here
@@ -234,6 +268,16 @@ export PORT=5000
 export WEB_CONCURRENCY=4
 export LOG_LEVEL=info
 ```
+
+### 🐳 Docker Features
+
+- **🏔️ Alpine Linux**: Lightweight base image (~50MB)
+- **🔒 Security**: Non-root user execution
+- **🏥 Health Checks**: Built-in health monitoring
+- **📊 Multi-stage**: Optimized build process
+- **🔄 Auto-restart**: Container restart policies
+- **🌐 Network**: Isolated Docker network
+- **📝 Logging**: Structured application logs
 
 ## ⚠️ Disclaimer
 
